@@ -47,4 +47,3 @@ turns out hashes do not work with package under test so two different
 - [ ] Pin versions
 - [ ] Automatic tests
 - [ ] `make`-less compilation (e.g. `tox-export` and `tox-compile`)
-- [ ] Remove requirements files when the corresponding environment is removed from tox

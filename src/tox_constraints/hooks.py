@@ -1,6 +1,6 @@
 """Simple tox plugin to facilitate working with abstract and concrete dependencies"""
+from collections import defaultdict
 from pathlib import Path
-from typing import List
 
 import tox  # type: ignore
 
@@ -47,23 +47,17 @@ def _export_deps(envconfigs):
     if not REQ_PATH.exists():
         REQ_PATH.mkdir()
 
-    tox_path = REQ_PATH / "tox"
-    if not tox_path.exists():
-        tox_path.mkdir()
-
-    filepaths: List[Path] = []
+    dep2names = defaultdict(list)
     for name, envconfig in envconfigs.items():
-        filepath = tox_path / f"{name}.txt"
-        _save_if_different(
-            filepath, HEADER + "\n".join(str(dep) for dep in envconfig.deps)
-        )
-        filepaths.append(filepath)
+        for dep in envconfig.deps:
+            dep2names[str(dep)].append(name)
 
-    _save_if_different(
-        REQ_PATH / "tox.txt",
-        HEADER
-        + "\n".join(f"-r{filepath.relative_to(REQ_PATH)}" for filepath in filepaths),
-    )
+    dep_len = max(len(dep) for dep in dep2names)
+    lines = [
+        f"{dep:<{dep_len}}  # from {', '.join(sorted(dep2names[dep]))}\n"
+        for dep in sorted(dep2names)
+    ]
+    _save_if_different(REQ_PATH / "tox.txt", HEADER + "".join(lines))
 
 
 @tox.hookimpl
