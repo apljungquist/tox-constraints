@@ -1,3 +1,4 @@
 -rrequirements/dev.txt
 -rrequirements/install_requires.txt
+-rrequirements/misc.txt
 -rrequirements/tox.txt

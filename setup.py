@@ -10,5 +10,5 @@ setuptools.setup(
     install_requires=install_requires,
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
-    entry_points={"tox": ["constraints = tox_constraints"]},
+    entry_points={"tox": ["constraints = tox_constraints.hooks"]},
 )

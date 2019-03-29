@@ -5,6 +5,8 @@
 -rtox/formatting.txt
 -rtox/linting.txt
 -rtox/typing.txt
+-rtox/coalmine.txt
 -rtox/py37.txt
 -rtox/cov-html.txt
+-rtox/canary.txt
 -rtox/cov-codecov.txt
