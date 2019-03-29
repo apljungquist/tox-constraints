@@ -43,7 +43,6 @@ turns out hashes do not work with package under test so two different
 
 ## TODO
 
-- [ ] Hashes (patch deps instead?)
 - [ ] Multiple constraints (stable, high, low, devel)
 - [ ] Pin versions
 - [ ] Automatic tests

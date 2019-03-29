@@ -10,4 +10,4 @@ requirements.txt: $(wildcard requirements/*.txt)
 
 # TODO: This will not update if requirements/tox/*.txt is touched
 constraints.txt: requirements.txt
-	pip-compile --output-file $@ $^ >/dev/null 2>&1
+	pip-compile --generate-hashes --output-file $@ $^ >/dev/null 2>&1

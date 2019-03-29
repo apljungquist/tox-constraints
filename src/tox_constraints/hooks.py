@@ -16,12 +16,12 @@ HEADER = """\
 
 def _patch_envconfigs(envconfigs):
     for envconfig in envconfigs.values():
-        envconfig.install_command.append("-cconstraints.txt")
+        envconfig.deps.append(tox.config.DepConfig("-cconstraints.txt"))
         if envconfig.skip_install is True:
             pass
         elif envconfig.skip_install is False:
-            envconfig.install_command.append(
-                "-r" + str(REQ_PATH / "install_requires.txt")
+            envconfig.deps.append(
+                tox.config.DepConfig("-r" + str(REQ_PATH / "install_requires.txt"))
             )
         else:
             raise ValueError
@@ -69,5 +69,5 @@ def _export_deps(envconfigs):
 @tox.hookimpl
 def tox_configure(config):
     """Apply concrete constraints and export abstract dependencies"""
-    _patch_envconfigs(config.envconfigs)
     _export_deps(config.envconfigs)
+    _patch_envconfigs(config.envconfigs)
