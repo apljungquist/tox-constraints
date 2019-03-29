@@ -43,8 +43,9 @@ turns out hashes do not work with package under test so two different
 
 ## TODO
 
-- [ ] Hashes
+- [ ] Hashes (patch deps instead?)
 - [ ] Multiple constraints (stable, high, low, devel)
 - [ ] Pin versions
 - [ ] Automatic tests
-- [ ] `make`-less compilation
+- [ ] `make`-less compilation (e.g. `tox-export` and `tox-compile`)
+- [ ] Remove requirements files when the corresponding environment is removed from tox
