@@ -44,6 +44,5 @@ turns out hashes do not work with package under test so two different
 ## TODO
 
 - [ ] Multiple constraints (stable, high, low, devel)
-- [ ] Pin versions
 - [ ] Automatic tests
 - [ ] `make`-less compilation (e.g. `tox-export` and `tox-compile`)

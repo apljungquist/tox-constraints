@@ -5,10 +5,11 @@ python:
   - '3.7'
 matrix:
   include:
-  - env: TOXENV=linting,formatting,typing,coalmine
+  - env: TOXENV=linting,formatting,typing,canary,coalmine
   fast_finish: true
 install:
-- pip install -cconstraints.txt tox
+- pip install -cconstraints.txt -rrequirements/install_requires.txt
+- pip install --no-deps -e .
 script:
 - tox
 cache:
@@ -20,7 +21,7 @@ branches:
 deploy:
   on:
     python: '3.7'
-    env: TOXENV=linting,formatting,typing,coalmine
+    env: TOXENV=linting,formatting,typing,canary,coalmine
     tags: true
   provider: pypi
   user: "sprigmaintainer"
