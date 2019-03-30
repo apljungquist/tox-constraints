@@ -2,27 +2,13 @@
 
 import setuptools
 
-
-def tweet():
-    print("Tweet, tweet!")
-
-
-def croak():
-    print("Croak")
-    raise RuntimeError
-
-
-actions = {
-    "1.0.1": croak,
-    "1.1": tweet,
-    "1.1.1": croak,
-}
-
-version = "1.1"
+from canary import VERSION
 
 setuptools.setup(
     name="tox-constraints-canary",
-    version=version,
+    version=VERSION,
+    py_modules=["canary"],
+    entry_points={
+        "console_scripts": ["canary = canary:main"],
+    },
 )
-
-actions[version]()

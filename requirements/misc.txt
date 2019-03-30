@@ -1,4 +1,4 @@
 # A constraint to the canary is added here to ensure the version is pinned to one that
 # works but in a place where that constraint would not be applied unless the
 # constraints file is used.
-tox-constraints-canary==1.1
+tox-constraints-canary==2.0.1

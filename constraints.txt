@@ -157,8 +157,8 @@ toml==0.10.0 \
     --hash=sha256:229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c \
     --hash=sha256:235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e \
     # via black, tox
-tox-constraints-canary==1.1 \
-    --hash=sha256:e71bbf8a563b9fd2b82a7c98a6631061e4d0d20d85f287c519282fb0916980bf
+tox-constraints-canary==2.0.1 \
+    --hash=sha256:a2db3b470340487f31a685a53acd96886848eb642e1907a726369edbbde0218f
 tox==3.8.0 \
     --hash=sha256:17f7b60ba824741c5affd458948193a680b0dc57f362ec19208030056caa7b76 \
     --hash=sha256:db6b674569911fa3f7272842fbb24de0fffa3e87470bc0f8cdd1e2c4db16be52
