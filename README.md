@@ -2,11 +2,22 @@
 
 *Makes tests reproducible with minimal configuration*
 
+
 ## Usage
 
 On occasions when I have been too lazy to provide friendly examples, my other projects may be a good place to look.
 
 [This is such an occasion](https://github.com/apljungquist/xfmt/commit/99341b58694e846dc009fca01cb6fb3d442fbe66).
+
+
+## Limitations
+
+This section lists known problems with the current implementation.
+
+### PyPy compatibility
+
+The version of pip that ships with pypy does not like the `-r` option on which this plugin depends.
+
 
 ## Objectives
 
@@ -17,11 +28,11 @@ This is accomplished by
 2. compiling a list of locked package versions, and
 3. enforcing the use of the locked version of packages.
 
-## Collection
+### Collection
 
 Packages are collected from these sources
 
-### Tox deps
+#### Tox deps
 
 Manually ensuring that all packages used in tox are pinned in the constraints is laborious.
 To make this easier this plugin established a pattern for modular requirements files and automatically populates one such file with all the abstract dependencies listed in the deps variables.
@@ -32,7 +43,7 @@ As such the recommended method as of now is to introduce all constraints via fil
 TODO: Implement and test lock/constraints overriding.
 -->
 
-### Setuptools install_requires
+#### Setuptools install_requires
 
 This one is a bit inelegant as of writing.
 To make it easy to collect packages listed here it is expected that they be factored out from `setup.py` to the file `requirements/install_requires.txt`.
@@ -44,14 +55,12 @@ One benefit of this method is that it makes the [enforcement](#enforcement) easi
 
 I suspect there are deficiencies related to conditional inclusions such as platform, python version, and extras.
 
-
-## Compilation
+### Compilation
 
 Use `pip-compile` manually or in a build script.
 See `Makefile` of this project for example.
 
-
-## Enforcement
+### Enforcement
 
 Two invocations of tox can have show different results even if the code being tested has not changed.
 This can happen for instance if a different version of the dependencies is installed.
@@ -67,7 +76,7 @@ This method has some drawbacks:
 2. It is verbose and repetitive.
 
 Drawback 1 above can be mitigated by also adding `.` to the deps variable but this
-smells a little bit and aggrevates drawback 2.
+smells a little bit and aggravates drawback 2.
 
 
 ## Why not just use ...
