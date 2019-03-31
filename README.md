@@ -95,3 +95,52 @@ Vanilla `tox` does have a few deficiencies however, some of which I have complai
 I seem to remember pipenv being an all-or-nothing solution but I have not researched it specifically for this project.
 TODO: Research what pipenv can do for the objectives of this project
 -->
+
+
+## Terminology
+
+This section is an attempt to help myself separate some concepts and use them consistently.
+
+### Abstract dependencies
+
+[Donald Stufft](https://caremad.io/posts/2013/07/setup-vs-requirement/) *abstract dependencies* as
+
+> dependencies which exist only as a name and an optional version specifier
+
+He further compares them to duck typing:
+
+> Think of it like duck typing your dependencies, you don’t care what specific “requests” you get as long as it looks like “requests”.
+
+### Concrete dependencies
+
+These are specific instances of abstract dependencies.
+They are typically expressed as a specific version and a packaging index or referred to directly using a URL.
+
+### Requirements
+
+The [pip documentation](https://pip.pypa.io/en/stable/user_guide/#requirements-files) contains this excerpt
+
+> “Requirements files” are files containing a list of items to be installed
+
+In the context of this project each such item is a *requirement*.
+
+Requirements must be abstract.
+They can be put in a few locations like
+* `install_requires` variable of a setup.py file,
+* `deps` variable of a tox configuration (with exceptions),
+* dedicated files named like
+    * `requirements.txt` containing the product of all other requirements, or
+    * `requirements/*.txt`.
+
+### Constraints
+
+The [pip documentation](https://pip.pypa.io/en/stable/user_guide/#constraints-files) contains this excerpt
+
+> Constraints files are requirements files that only control which version of a requirement is installed, not whether it is installed or not.
+
+In the context of this project each item in such a file is a *constraint*.
+
+Constraints may be absent (equivalent to no constraint), abstract, or concrete.
+They can be put in files named like
+    * `constraints.txt` corresponding to `requirements.txt`, or
+    * `constraints-*.txt` for alternative constraints.
