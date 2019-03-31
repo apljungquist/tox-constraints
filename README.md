@@ -79,7 +79,14 @@ Drawback 1 above can be mitigated by also adding `.` to the deps variable but th
 smells a little bit and aggravates drawback 2.
 
 
-## Why not just use ...
+## Related projects
+
+or *why not just use x?*
+
+This section documents my research into other projects.
+It should
+* convince the reader that a project is not relevant and can be disregarded or,
+* find ways in which a project can be used to accomplish the objective of this project, jointly or separately.
 
 ### tox
 
@@ -91,11 +98,31 @@ Vanilla `tox` does have a few deficiencies however, some of which I have complai
 `pip-compile` is my recommended way of locking package versions so, in a way, it is being used.
 
 ### pipenv
-<!--
-I seem to remember pipenv being an all-or-nothing solution but I have not researched it specifically for this project.
-TODO: Research what pipenv can do for the objectives of this project
--->
 
+Pipenv seems rather focused on application development, as opposed to library development.
+This allows them to adopt a more rigid model in which it exists
+* only one version of python,
+* only one or two sets of abstract requirements (default, development),
+* only one set of concrete constraints (`Pipfile.lock`).
+
+It seems to [work OK-ish with tox](https://github.com/tox-dev/tox-pipenv)
+
+> Is tox.ini deps section really in control?
+> No, this is a known limitation.
+
+However, none of the above should prevent it to be used as the primary source of concrete constraints instead of `constraints.txt`.
+It should also still be possible to output the results of collection to a pipfile.
+
+### poetry
+
+My impression of poetry is that it aims to replace the PyPA packaging-installation chain with a single tool.
+This seems risky and inflexible.
+However, this opinion is largely unsupported by concrete evidence and should be taken lightly.
+
+[Frost Ming](https://frostming.com/2019/01-04/pipenv-poetry) points out one important flaw
+
+> Poetry only works under one workflow.
+> For example, it doesn't support installing current dependencies into system Python, which is the typical workflow for developing in docker.
 
 ## Terminology
 
