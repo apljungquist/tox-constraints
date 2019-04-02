@@ -16,7 +16,12 @@ HEADER = """\
 
 def _patch_envconfigs(envconfigs):
     for envconfig in envconfigs.values():
-        envconfig.deps.append(tox.config.DepConfig("-cconstraints.txt"))
+        for dep in envconfig.deps:
+            if dep.name.startswith("-c"):
+                break
+        else:
+            envconfig.deps.append(tox.config.DepConfig("-cconstraints.txt"))
+
         if envconfig.skip_install is True:
             pass
         elif envconfig.skip_install is False:
@@ -50,6 +55,12 @@ def _export_deps(envconfigs):
     dep2names = defaultdict(list)
     for name, envconfig in envconfigs.items():
         for dep in envconfig.deps:
+            if dep.name.startswith("-r"):
+                continue  # Potential loop
+
+            if dep.name.startswith("-c"):
+                continue  # Constraint override
+
             dep2names[str(dep)].append(name)
 
     dep_len = max(len(dep) for dep in dep2names)

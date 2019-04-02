@@ -3,9 +3,13 @@ dist: xenial
 language: python
 python:
   - '3.7'
+env:
+  - TOXENV=linting,formatting,typing,canary,coalmine-lowest,coalmine-stable
+  - TOXENV=coalmine-devel
+
 matrix:
-  include:
-  - env: TOXENV=linting,formatting,typing,canary,coalmine
+  allow_failures:
+  - env: TOXENV=coalmine-devel
   fast_finish: true
 install:
 - pip install -cconstraints.txt -rrequirements/install_requires.txt
@@ -21,7 +25,7 @@ branches:
 deploy:
   on:
     python: '3.7'
-    env: TOXENV=linting,formatting,typing,canary,coalmine
+    env: TOXENV=linting,formatting,typing,canary,coalmine-lowest,coalmine-stable
     tags: true
   provider: pypi
   user: "sprigmaintainer"

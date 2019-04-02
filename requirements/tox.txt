@@ -8,5 +8,5 @@ coverage                # from cov-html, py37
 mypy                    # from typing
 pylint                  # from linting
 pytest                  # from linting, py37
-tox                     # from coalmine
+tox                     # from coalmine-devel, coalmine-lowest, coalmine-stable
 tox-constraints-canary  # from canary
