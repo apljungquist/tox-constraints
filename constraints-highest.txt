@@ -1,0 +1,6 @@
+#
+# Test against latest released versions of dependencies to be notified of changes that
+# may break this package for users.
+#
+# It is needed only to disable the default constraints and may be empty.
+#

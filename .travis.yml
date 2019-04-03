@@ -4,12 +4,12 @@ language: python
 python:
   - '3.7'
 env:
-  - TOXENV=linting,formatting,typing,canary,coalmine-lowest,coalmine-stable
-  - TOXENV=coalmine-devel
+  - TOXENV=linting,formatting,typing,canary,coalmine,coalmine-lowest
+  - TOXENV=coalmine-highest,coalmine-devel
 
 matrix:
   allow_failures:
-  - env: TOXENV=coalmine-devel
+  - env: TOXENV=coalmine-highest,coalmine-devel
   fast_finish: true
 install:
 - pip install -cconstraints.txt -rrequirements/install_requires.txt
@@ -25,7 +25,7 @@ branches:
 deploy:
   on:
     python: '3.7'
-    env: TOXENV=linting,formatting,typing,canary,coalmine-lowest,coalmine-stable
+    env: TOXENV=linting,formatting,typing,canary,coalmine,coalmine-lowest
     tags: true
   provider: pypi
   user: "sprigmaintainer"

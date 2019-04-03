@@ -4,9 +4,8 @@
 #
 black                   # from formatting
 codecov                 # from cov-codecov
-coverage                # from cov-html, py37
+coverage                # from coalmine, cov-html, py37
 mypy                    # from typing
 pylint                  # from linting
-pytest                  # from linting, py37
-tox                     # from coalmine-devel, coalmine-lowest, coalmine-stable
+pytest                  # from coalmine, linting, py37
 tox-constraints-canary  # from canary

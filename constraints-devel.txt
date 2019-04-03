@@ -1,1 +1,5 @@
+#
+# Test against yet unreleased versions of dependencies to get advance notice of
+# breaking changes, and to facilitate maintaining interdependent packages.
+#
 git+https://github.com/tox-dev/tox.git#egg=tox

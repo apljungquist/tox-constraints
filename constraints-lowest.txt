@@ -1,1 +1,6 @@
-tox==2.0
+#
+# Test against yet the lowest versions of dependencies to be notified of regressions
+# to the support of older dependencies.
+#
+tox==2.0 \
+    --hash=sha256:18d0f28d855ef4f062e7fff9d80f7c25227e275dcf4155c575feae51c603a936
