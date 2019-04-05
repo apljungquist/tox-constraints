@@ -152,3 +152,25 @@ Constraints may be absent (equivalent to no constraint), abstract, or concrete.
 They can be put in files named like
     * `constraints.txt` corresponding to `requirements.txt`, or
     * `constraints-*.txt` for alternative constraints.
+
+### Production dependencies
+Packages needed for the package under test to function properly.
+
+### Test dependencies
+Packages needed to test the package under test.
+
+Must be installed in the same environment as the package under test and the prod deps.
+Thus, if a package is both a prod dep and a test dep, the same version must be used for testing as is being tested.
+This forces us to give up either test consistency or test coverage.
+
+For instance, pluggy is a dependency of both pytest and (indirectly) tox-constraints.
+It is therefore impossible to vary the version of pluggy used by the package under test (tox-constraints) while keeping the version used by the test runner (pytest) fixed.
+
+### Development dependencies
+Packages that are needed at any stage of the development.
+
+Can be installed in a different environment to the other categories.
+Thus, the version can be fixed independently of the version used in prod or test.
+
+For instance, six is a dependency both of pip-tools and (indirectly) of tox-constranints.
+However, because pip-tools and the package under test (tox-constraints) are installed in different environments, it is possible to test against one version while using another for development.
