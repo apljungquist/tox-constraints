@@ -16,6 +16,11 @@ HEADER = """\
 
 def _patch_envconfigs(envconfigs):
     for envconfig in envconfigs.values():
+        if envconfig.skip_install is True and not envconfig.deps:
+            # Avoid attempting to install no packages as pip does not like this:
+            # > ERROR: You must give at least one requirement to install
+            continue
+
         for dep in envconfig.deps:
             if dep.name.startswith("-c"):
                 break
