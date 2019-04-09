@@ -14,3 +14,22 @@ constraints.txt: requirements.txt
 sdist:
 	-rm src/*.egg-info/SOURCES.txt
 	python setup.py sdist
+
+# Create, unpack and display contents of sdist
+# Automatically check some desired properties of the sdist:
+# * pyc files have not been included
+# * tests work
+# * the licence file has been included
+test_sdist:
+	-rm src/*.egg-info/SOURCES.txt
+	-rm -r dist
+	python setup.py sdist
+
+	cd dist \
+	&& tar -xzf *.tar.gz \
+	&& rm *.tar.gz \
+	&& cd * \
+	&& tree . \
+	&& test -z "$$(find . -name '*.pyc')" \
+	&& python setup.py test \
+	&& test -e LICENSE

@@ -1,1 +1,5 @@
-include requirements/install_requires.txt
+include requirements/install_requires.txt LICENSE
+
+graft tests
+
+global-exclude *.py[cod]
