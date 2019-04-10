@@ -1,4 +1,4 @@
-include requirements/install_requires.txt LICENSE
+include requirements/install_requires.txt LICENSE tox.ini constraints*.txt
 
 graft tests
 

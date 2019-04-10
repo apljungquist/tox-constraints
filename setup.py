@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 import setuptools
 
@@ -10,6 +11,25 @@ with open(
 with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fp:
     long_description = fp.read()
 
+
+class TestCommand(setuptools.Command):
+    description = 'run tox tests'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        subprocess.check_call([
+            "tox",
+            "-ecoalmine{,-lowest,-highest,-devel}",
+            "-c./tox.ini",
+        ])
+
+
 setuptools.setup(
     name="tox-constraints",
     version="0.5.2.dev",
@@ -20,10 +40,10 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=install_requires,
-    setup_requires=["pytest-runner"],
-    tests_require=["pytest"],
+    tests_require=["tox"],
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
+    cmdclass={'test': TestCommand},
     entry_points={"tox": ["constraints = tox_constraints.hooks"]},
     classifiers=["License :: OSI Approved :: MIT License"]
 )
