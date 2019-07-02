@@ -32,4 +32,5 @@ test_sdist:
 	&& tree . \
 	&& test -z "$$(find . -name '*.pyc')" \
 	&& python setup.py test \
-	&& test -e LICENSE
+	&& test -e LICENSE \
+	&& pwd
