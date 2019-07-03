@@ -15,7 +15,11 @@ HEADER = """\
 
 
 def _patch_envconfigs(envconfigs):
-    for envconfig in envconfigs.values():
+    for name, envconfig in envconfigs.items():
+        if name == ".package":
+            # Don't patch isolated packaging environment because some parsing will fail
+            # on -cconstraints.txt
+            continue
         if envconfig.skip_install is True and not envconfig.deps:
             # Avoid attempting to install no packages as pip does not like this:
             # > ERROR: You must give at least one requirement to install
