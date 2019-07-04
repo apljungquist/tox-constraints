@@ -165,8 +165,7 @@ six==1.12.0 \
     # via astroid, packaging, pip-tools, tox
 toml==0.10.0 \
     --hash=sha256:229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c \
-    --hash=sha256:235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e \
-    # via black, tox
+    --hash=sha256:235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e
 tox-constraints-canary==2.0.1 \
     --hash=sha256:a2db3b470340487f31a685a53acd96886848eb642e1907a726369edbbde0218f
 tox==3.13.2 \

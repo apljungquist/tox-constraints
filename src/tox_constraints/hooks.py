@@ -1,7 +1,9 @@
 """Simple tox plugin to facilitate working with abstract and concrete dependencies"""
+import dataclasses
 from collections import defaultdict
 from pathlib import Path
 
+import toml
 import tox  # type: ignore
 
 REQ_PATH = Path("requirements")
@@ -12,6 +14,29 @@ HEADER = """\
 # It is updated every time tox runs
 #
 """
+
+
+@dataclasses.dataclass
+class Config:  # pylint: disable=too-few-public-methods
+    """A collection of configurable parameters for this tool.
+
+    This class serves as a single source of documentation for what parameters exist and
+    what types and values they may take.
+    """
+
+    @staticmethod
+    def read():
+        """Read from default path"""
+        pyproject_toml = toml.load("pyproject.toml")
+        section = pyproject_toml["tool"]["tox-constraints"]
+
+        # If any configuration of this plugin exists, enable the plugin unless
+        # explicitly disabled to reduce the configuration needed.
+        plugin_enabled = section.get("plugin_enabled", True)
+
+        return Config(plugin_enabled=plugin_enabled)
+
+    plugin_enabled: bool
 
 
 def _patch_envconfigs(envconfigs):
@@ -89,5 +114,13 @@ def _export_deps(envconfigs):
 @tox.hookimpl
 def tox_configure(config):
     """Apply concrete constraints and export abstract dependencies"""
-    _export_deps(config.envconfigs)
-    _patch_envconfigs(config.envconfigs)
+    try:
+        tool_config = Config.read()
+    except (FileNotFoundError, KeyError):
+        # Disable plugin by default to make it less disruptive in a development
+        # environment that is shared by multiple projects
+        return
+
+    if tool_config.plugin_enabled:
+        _export_deps(config.envconfigs)
+        _patch_envconfigs(config.envconfigs)

@@ -14,8 +14,8 @@ _PROJECT_NAMES = [
     pytest.param("less", marks=[]),
     pytest.param("more", marks=[]),
     pytest.param("xfmt", marks=[]),
-    pytest.param("pypackage", marks=[pytest.mark.xfail(strict=True)]),
-    pytest.param("sprig", marks=[pytest.mark.xfail(strict=True)]),
+    pytest.param("pypackage", marks=[]),
+    pytest.param("sprig", marks=[]),
 ]
 
 
