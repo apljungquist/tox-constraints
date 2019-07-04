@@ -3,7 +3,7 @@ import os
 import setuptools
 
 with open(
-        os.path.join(os.path.dirname(__file__), "requirements", "install_requires.txt")
+    os.path.join(os.path.dirname(__file__), "requirements", "install_requires.txt")
 ) as fp:
     install_requires = list(fp)
 
@@ -23,5 +23,5 @@ setuptools.setup(
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
     entry_points={"tox": ["constraints = tox_constraints.hooks"]},
-    classifiers=["License :: OSI Approved :: MIT License"]
+    classifiers=["License :: OSI Approved :: MIT License"],
 )
