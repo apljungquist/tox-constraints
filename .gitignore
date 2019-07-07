@@ -14,9 +14,6 @@ dist/
 # mypy
 .mypy_cache/
 
-# pyenv
-.python-version
-
 # tox
 .tox/
 
