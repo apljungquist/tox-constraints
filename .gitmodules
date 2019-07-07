@@ -1,0 +1,3 @@
+[submodule "sample_projects/xfmt"]
+	path = sample_projects/xfmt
+	url = git@github.com:apljungquist/xfmt.git
