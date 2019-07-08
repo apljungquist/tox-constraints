@@ -37,6 +37,12 @@ def _patch_envconfigs(envconfigs):
             envconfig.deps.append(
                 tox.config.DepConfig("-r" + str(REQ_PATH / "install_requires.txt"))
             )
+            for extra in envconfig.extras:
+                envconfig.deps.append(
+                    tox.config.DepConfig(
+                        "-r" + str(REQ_PATH / f"extras_require-{extra}.txt")
+                    )
+                )
         else:
             raise ValueError
 

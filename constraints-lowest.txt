@@ -2,5 +2,5 @@
 # Test against yet the lowest versions of dependencies to be notified of regressions
 # to the support of older dependencies.
 #
-tox==2.0 \
-    --hash=sha256:18d0f28d855ef4f062e7fff9d80f7c25227e275dcf4155c575feae51c603a936
+tox==2.4 \
+    --hash=sha256:3a1a876e5d76eb354a094334f60fbaf96b31abcc5a980fc2f6272bf91d5cf0d4
