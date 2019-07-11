@@ -1,3 +1,6 @@
 [submodule "sample_projects/xfmt"]
 	path = sample_projects/xfmt
 	url = git@github.com:apljungquist/xfmt.git
+[submodule "sample_projects/sprig"]
+	path = sample_projects/sprig
+	url = git@github.com:apljungquist/sprig.git
