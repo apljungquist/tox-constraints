@@ -11,8 +11,7 @@ _PROJECT_ROOT = pathlib.Path(__file__).parents[1]
 _SAMPLE_PROJECTS = _PROJECT_ROOT / "sample_projects"
 _PROJECT_NAMES = [
     # Keep slow tests and expected failures in the back to fail fast
-    pytest.param("less", marks=[]),
-    pytest.param("more", marks=[]),
+    pytest.param("coalmine", marks=[]),
     pytest.param("xfmt", marks=[]),
     pytest.param("pypackage", marks=[]),
     pytest.param("sprig", marks=[]),

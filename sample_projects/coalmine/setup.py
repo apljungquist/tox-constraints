@@ -17,9 +17,9 @@ def _read_requirements(prefix, postfix=None):
 
 
 setuptools.setup(
-    name="more",
+    name="coalmine",
     version="0",
     install_requires=_read_requirements("install"),
-    extras_require={"more": _read_requirements("extras", "more")},
+    extras_require={"melanin": _read_requirements("extras", "melanin")},
     classifiers=["Private :: Do not upload to PyPI"],
 )
