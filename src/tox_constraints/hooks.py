@@ -2,6 +2,7 @@
 import dataclasses
 from collections import defaultdict
 from pathlib import Path
+from typing import Dict, Set
 
 import toml
 import tox  # type: ignore
@@ -34,12 +35,61 @@ class Config:  # pylint: disable=too-few-public-methods
         # explicitly disabled to reduce the configuration needed.
         plugin_enabled = section.get("plugin_enabled", True)
 
-        return Config(plugin_enabled=plugin_enabled)
+        # Additional concrete requirements that cannot be captured in the constraints
+        # file. This could be because they point to a path relative to the package
+        # under test.
+        concrete = section.get("concrete", {})
+
+        return Config(plugin_enabled=plugin_enabled, concrete=concrete)
 
     plugin_enabled: bool
+    concrete: Dict[str, str]
 
 
-def _patch_envconfigs(envconfigs):
+_SAMPLE = """
+# alpha
+bravo
+charlie > 3
+delta ; python_version >= '3.7'
+echo-foxtrot
+golf # hotel
+"""
+
+
+def _parse_requirements(text: str) -> Set[str]:
+    """
+    >>> sorted(_parse_requirements(_SAMPLE))
+    ['bravo', 'charlie > 3', "delta ; python_version >= '3.7'", 'echo-foxtrot', 'golf']
+    """
+    return {
+        req for req in (line.split("#")[0].strip() for line in text.splitlines()) if req
+    }
+
+
+def _expands_requirements(tool_config: Config, envconfig) -> None:
+    filenames = ["install_requires.txt"] + [
+        f"extras_require-{extra}.txt" for extra in envconfig.extras
+    ]
+
+    dep_names = set()
+    for filename in filenames:
+        filepath = REQ_PATH / filename
+        dep_names.update(_parse_requirements(filepath.read_text()))
+
+    new = {
+        dep_name: tox.config.DepConfig(tool_config.concrete.get(dep_name, dep_name))
+        for dep_name in dep_names
+    }
+    old = {dep.name: i for i, dep in enumerate(envconfig.deps)}
+
+    for dep_name in new:
+        if dep_name in old:
+            envconfig.deps[old[dep_name]] = new[dep_name]
+        else:
+            envconfig.deps.append(new[dep_name])
+
+
+def _patch_envconfigs(tool_config: Config, envconfigs):
     for name, envconfig in envconfigs.items():
         if name == ".package":
             # Don't patch isolated packaging environment because some parsing will fail
@@ -59,15 +109,7 @@ def _patch_envconfigs(envconfigs):
         if envconfig.skip_install is True:
             pass
         elif envconfig.skip_install is False:
-            envconfig.deps.append(
-                tox.config.DepConfig("-r" + str(REQ_PATH / "install_requires.txt"))
-            )
-            for extra in envconfig.extras:
-                envconfig.deps.append(
-                    tox.config.DepConfig(
-                        "-r" + str(REQ_PATH / f"extras_require-{extra}.txt")
-                    )
-                )
+            _expands_requirements(tool_config, envconfig)
         else:
             raise ValueError
 
@@ -123,4 +165,4 @@ def tox_configure(config):
 
     if tool_config.plugin_enabled:
         _export_deps(config.envconfigs)
-        _patch_envconfigs(config.envconfigs)
+        _patch_envconfigs(tool_config, config.envconfigs)
