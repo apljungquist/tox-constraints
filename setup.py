@@ -12,7 +12,7 @@ with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fp:
 
 setuptools.setup(
     name="tox-constraints",
-    version="0.7.1",
+    version="0.8",
     author="AP Ljungquist",
     author_email="ap@ljungquist.eu",
     url="https://github.com/apljungquist/tox-constraints",
@@ -22,6 +22,13 @@ setuptools.setup(
     install_requires=install_requires,
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
-    entry_points={"tox": ["constraints = tox_constraints.hooks"]},
+    entry_points={
+        "tox": ["constraints = tox_constraints.hooks"],
+        "console_scripts": [
+            "toxc-install=tox_constraints.git_filter:install",
+            "toxc-clean=tox_constraints.git_filter:clean",
+            "toxc-smudge=tox_constraints.git_filter:smudge",
+        ],
+    },
     classifiers=["License :: OSI Approved :: MIT License"],
 )

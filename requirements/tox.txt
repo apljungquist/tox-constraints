@@ -8,5 +8,5 @@ coverage  # from cov-html, py37, py37-devel, py37-highest, py37-lowest
 mypy      # from typing
 pep517    # from build
 pylint    # from linting
-pytest    # from linting, py37, py37-devel, py37-highest, py37-lowest
+pytest    # from linting, py37, py37-devel, py37-highest, py37-lowest, typing
 twine     # from build

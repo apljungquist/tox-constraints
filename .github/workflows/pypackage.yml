@@ -18,6 +18,7 @@ jobs:
         pip install -c constraints.txt pip setuptools
         pip install -c constraints.txt -r requirements.txt
         pip install . --no-deps
+        toxc-install
     - name: Run tests with tox
       run: |
         tox -e linting,formatting,typing,py37,build
