@@ -1,5 +1,6 @@
 """Simple tox plugin to facilitate working with abstract and concrete dependencies"""
 import dataclasses
+import itertools
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Set
@@ -89,8 +90,17 @@ def _expands_requirements(tool_config: Config, envconfig) -> None:
             envconfig.deps.append(new[dep_name])
 
 
-def _patch_envconfigs(tool_config: Config, envconfigs):
-    for name, envconfig in envconfigs.items():
+def _find_upwards(start: Path, filename: str) -> Path:
+    for dirpath in itertools.chain([start], start.parents):
+        filepath = dirpath / filename
+        if filepath.exists():
+            return filepath
+
+    raise FileNotFoundError
+
+
+def _patch_envconfigs(tool_config: Config, config):
+    for name, envconfig in config.envconfigs.items():
         if name == ".package":
             # Don't patch isolated packaging environment because some parsing will fail
             # on -cconstraints.txt
@@ -104,7 +114,10 @@ def _patch_envconfigs(tool_config: Config, envconfigs):
             if dep.name.startswith("-c"):
                 break
         else:
-            envconfig.deps.append(tox.config.DepConfig("-cconstraints.txt"))
+            constraints_filepath = _find_upwards(
+                Path(config.toxinidir), "constraints.txt"
+            )
+            envconfig.deps.append(tox.config.DepConfig(f"-c{constraints_filepath}"))
 
         if envconfig.skip_install is True:
             pass
@@ -165,4 +178,4 @@ def tox_configure(config):
 
     if tool_config.plugin_enabled:
         _export_deps(config.envconfigs)
-        _patch_envconfigs(tool_config, config.envconfigs)
+        _patch_envconfigs(tool_config, config)

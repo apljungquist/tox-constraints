@@ -12,7 +12,7 @@ with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fp:
 
 setuptools.setup(
     name="tox-constraints",
-    version="0.8",
+    version="0.9",
     author="AP Ljungquist",
     author_email="ap@ljungquist.eu",
     url="https://github.com/apljungquist/tox-constraints",
