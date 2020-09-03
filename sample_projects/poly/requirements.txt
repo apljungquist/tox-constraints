@@ -1,0 +1,8 @@
+
+
+black==19.3b0  # same version as in parent project so that we do not need separate venvs
+pip < 20.3
+pip-tools < 6
+setuptools
+tox == 3.13.2
+virtualenv == 16.6.1

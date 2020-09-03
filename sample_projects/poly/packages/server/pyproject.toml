@@ -1,0 +1,5 @@
+[tool.tox-constraints]
+plugin_enabled = true
+#[tool.tox-constraints.concrete]
+#client = "-e../client"
+#common = ""
