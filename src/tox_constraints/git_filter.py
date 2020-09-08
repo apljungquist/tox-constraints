@@ -33,8 +33,8 @@ def smudge_text(text: str) -> str:
 
 def install() -> None:
     """Configure git to use this filter"""
-    _run(["git", "config", "filter.toxc.clean", "toxc-clean"])
-    _run(["git", "config", "filter.toxc.smudge", "toxc-smudge"])
+    _run(["git", "config", "--local", "filter.toxc.clean", "toxc-clean"])
+    _run(["git", "config", "--local", "filter.toxc.smudge", "toxc-smudge"])
 
 
 def clean():
