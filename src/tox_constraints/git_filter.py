@@ -2,7 +2,7 @@
 import pathlib
 import subprocess
 import sys
-from typing import Tuple
+from typing import Iterator, Tuple
 
 
 def _run(cmd) -> str:
@@ -13,22 +13,26 @@ def _top_level() -> pathlib.Path:
     return pathlib.Path(_run(["git", "rev-parse", "--show-toplevel"]).strip())
 
 
-def _replacement() -> Tuple[str, str]:
+def _replacements() -> Iterator[Tuple[str, str]]:
     # Prefix the replacement with # so that the result is still a valid constraints
     # file. If not done, bootstrapping toxc can become an issue.
-    return f"-e file://{_top_level()}", "# $TOP_LEVEL$"
+    top_level = _top_level()
+    yield f"-e file://{top_level}", "# $TOP_LEVEL$"
+    yield f"file://{top_level}", "# $TOP_LEVEL_PLAIN$"
 
 
 def clean_text(text: str) -> str:
     """Testable core of the clean command"""
-    src, tgt = _replacement()
-    return text.replace(src, tgt)
+    for src, tgt in _replacements():
+        text = text.replace(src, tgt)
+    return text
 
 
 def smudge_text(text: str) -> str:
     """Testable core of the smudge command"""
-    tgt, src = _replacement()
-    return text.replace(src, tgt)
+    for tgt, src in _replacements():
+        text = text.replace(src, tgt)
+    return text
 
 
 def install() -> None:
