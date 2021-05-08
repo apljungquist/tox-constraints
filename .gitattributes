@@ -1,2 +1,2 @@
-constraints*.txt filter=toxc
+./constraints*.txt filter=toxc
 
