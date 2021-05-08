@@ -1,5 +1,5 @@
 [BASIC]
-good-names=fp
+good-names=e, fp, logger
 
 [MISCELLANEOUS]
 notes=FIXME,XXX
