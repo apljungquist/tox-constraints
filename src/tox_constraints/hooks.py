@@ -41,10 +41,17 @@ class Config:  # pylint: disable=too-few-public-methods
         # under test.
         concrete = section.get("concrete", {})
 
-        return Config(plugin_enabled=plugin_enabled, concrete=concrete)
+        constraints_filename = section.get("constraints_filename", "constraints.txt")
+
+        return Config(
+            plugin_enabled=plugin_enabled,
+            concrete=concrete,
+            constraints_filename=constraints_filename,
+        )
 
     plugin_enabled: bool
     concrete: Dict[str, str]
+    constraints_filename: str
 
 
 _SAMPLE = """
@@ -115,7 +122,7 @@ def _patch_envconfigs(tool_config: Config, config):
                 break
         else:
             constraints_filepath = _find_upwards(
-                Path(config.toxinidir), "constraints.txt"
+                Path(config.toxinidir), tool_config.constraints_filename
             )
             envconfig.deps.append(tox.config.DepConfig(f"-c{constraints_filepath}"))
 
