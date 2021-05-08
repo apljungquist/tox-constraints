@@ -1,14 +1,22 @@
 """Simple tox plugin to facilitate working with abstract and concrete dependencies"""
 import dataclasses
 import itertools
+import logging
+import os
+import sys
 import textwrap
-
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, Set
+from typing import Dict, Iterator, Set
 
+import pkg_resources
 import toml
 import tox  # type: ignore
+import tox.config  # type: ignore
+import tox.reporter  # type: ignore
+import tox.venv  # type: ignore
+
+logger = logging.getLogger(__name__)
 
 REQ_PATH = Path("requirements")
 ARG_NAME = "--requirements-file"
@@ -65,22 +73,32 @@ class Config:  # pylint: disable=too-few-public-methods
 
 _SAMPLE = """
 # alpha
-bravo
-charlie > 3
-delta ; python_version >= '3.7'
-echo-foxtrot
-golf # hotel
+b
+c > 3
+d ; python_version >= '3.7'
+e-f
+g # hotel
+black==19.3b0 \\
+    --hash=sha256:09a9dcb7c46ed496a9850b76e4e825d6049ecd38b611f1224857a79bd985a8cf \\
+    --hash=sha256:68950ffd4d9169716bcb8719a56c07a2f4485354fec061cdd5910aa07369731c \\
+    # via -r requirements/tox.txt
 """
 
 
-def _parse_requirements(text: str) -> Set[str]:
+def _parse_requirements(text: str) -> Iterator[pkg_resources.Requirement]:
     """
-    >>> sorted(_parse_requirements(_SAMPLE))
-    ['bravo', 'charlie > 3', "delta ; python_version >= '3.7'", 'echo-foxtrot', 'golf']
+    >>> sorted(map(str,_parse_requirements(_SAMPLE)))
+    ['b', 'black==19.3b0', 'c>3', 'd; python_version >= "3.7"', 'e-f', 'g']
     """
-    return {
-        req for req in (line.split("#")[0].strip() for line in text.splitlines()) if req
-    }
+    # pylint: disable=no-member
+    for line in text.splitlines():
+        try:
+            ham = line.split("#")[0].strip(" \\")
+            if not ham:
+                continue
+            yield pkg_resources.Requirement.parse(ham)
+        except pkg_resources.extern.packaging.requirements.InvalidRequirement:  # type: ignore
+            pass
 
 
 def _expands_requirements(tool_config: Config, envconfig) -> None:
@@ -88,10 +106,10 @@ def _expands_requirements(tool_config: Config, envconfig) -> None:
         f"extras_require-{extra}.txt" for extra in envconfig.extras
     ]
 
-    dep_names = set()
+    dep_names: Set[str] = set()
     for filename in filenames:
         filepath = REQ_PATH / filename
-        dep_names.update(_parse_requirements(filepath.read_text()))
+        dep_names.update(map(str, _parse_requirements(filepath.read_text())))
 
     new = {
         dep_name: tox.config.DepConfig(tool_config.concrete.get(dep_name, dep_name))
@@ -205,3 +223,79 @@ def tox_configure(config):
         if config.option.requirementsfile is not None:
             _export_deps(config.envconfigs, Path(config.option.requirementsfile))
         _patch_envconfigs(tool_config, config)
+
+
+def _reqs_from_deps(deps):
+    paths = [Path(dep.name[2:]) for dep in deps if dep.name.startswith("-c")]
+
+    # Poorly handled corner case: when skip_install is set and there are no deps listed
+    # for an environment then the constraints file is not been appended making any
+    # information needed to pin the seeds unavailable at this point
+    if not paths:
+        logger.warning("No constraints file specified, seeds will not be pinned")
+
+    for path in paths:
+        text = path.read_text()
+        yield from _parse_requirements(text)
+
+
+def _exact_version(req):
+    for version_cmp, version in req.specs:
+        if version_cmp == "==":
+            return version
+    raise LookupError(f"no == for {req}")
+
+
+def _augmented_virtualenv_args(args, deps):
+    yield from args
+    constraints = {req.key: req for req in _reqs_from_deps(deps)}
+    for distribution in ["pip", "setuptools", "wheel"]:
+        try:
+            req = constraints[distribution]
+            version = _exact_version(req)
+            yield f"--{distribution}"
+            yield version
+        except LookupError:
+            logger.warning("Seed %s is not pinned", distribution)
+
+
+_SKIP_VENV_CREATION = os.environ.get("_TOX_SKIP_ENV_CREATION_TEST", False) == "1"
+
+
+@tox.hookimpl
+def tox_testenv_create(venv, action):
+    # pylint: disable=protected-access,missing-docstring
+    config_interpreter = venv.getsupportedinterpreter()
+    args = [sys.executable, "-m", "virtualenv"]
+    if venv.envconfig.sitepackages:
+        args.append("--system-site-packages")
+    if venv.envconfig.alwayscopy:
+        args.append("--always-copy")
+    if not venv.envconfig.download:
+        args.append("--no-download")
+    else:
+        args.append("--download")
+    # add interpreter explicitly, to prevent using default (virtualenv.ini)
+    args.extend(["--python", str(config_interpreter)])
+
+    # Disables it for whole function but place here to consolidate changes
+    args = list(_augmented_virtualenv_args(args, venv.envconfig.deps))
+
+    tox.venv.cleanup_for_venv(venv)
+
+    base_path = venv.path.dirpath()
+    base_path.ensure(dir=1)
+    args.append(venv.path.basename)
+    if not tox.venv._SKIP_VENV_CREATION:
+        try:
+            venv._pcall(
+                args,
+                venv=False,
+                action=action,
+                cwd=base_path,
+                redirect=tox.reporter.verbosity() < tox.reporter.Verbosity.DEBUG,
+            )
+        except KeyboardInterrupt:
+            venv.status = "keyboardinterrupt"
+            raise
+    return True  # Return non-None to indicate plugin has completed

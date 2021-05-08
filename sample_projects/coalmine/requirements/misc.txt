@@ -1,0 +1,5 @@
+# These are always installed by virtualenv and are listed here so that they will
+# be pinned in the constraints file and consequently in the virtual environments.
+pip < 20.3
+setuptools
+wheel
