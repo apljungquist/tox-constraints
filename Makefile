@@ -1,5 +1,6 @@
+# Use -l to stop tox from running envs
 requirements/tox.txt: tox.ini
-	tox -l >/dev/null 2>&1
+	tox -l --requirements-file $@ >/dev/null 2>&1
 
 requirements.txt: $(wildcard requirements/*.txt)
 	echo $^ \
