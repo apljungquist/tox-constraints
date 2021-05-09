@@ -3,6 +3,9 @@
 # constraints file is used.
 tox-constraints-canary==2.0.1
 
+# Temporary constraints to help resolver converge
+pip-tools < 6
+
 # These are always installed by virtualenv and are listed here so that they will
 # be pinned in the constraints file and consequently in the virtual environments.
 pip < 20.3

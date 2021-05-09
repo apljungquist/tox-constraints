@@ -7,7 +7,7 @@ import sys
 import textwrap
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, Iterator, Set
+from typing import Dict, Iterator, Set, Optional
 
 import pkg_resources
 import toml
@@ -168,7 +168,7 @@ def _save_if_different(path: Path, new_content: str):
     """
     try:
         with path.open("r") as fp:
-            old_content = fp.read()
+            old_content: Optional[str] = fp.read()
     except FileNotFoundError:
         old_content = None
 
