@@ -2,5 +2,8 @@
 # Test against yet the lowest versions of dependencies to be notified of regressions
 # to the support of older dependencies.
 #
-tox==2.4 \
-    --hash=sha256:3a1a876e5d76eb354a094334f60fbaf96b31abcc5a980fc2f6272bf91d5cf0d4
+# NB: Requirements specified by these packages will override what is specified in any
+# subsequent constraints files.
+tox==3.10 \
+    --hash=sha256:5d6b9e7ad99a93b00ecd509e13552600d38eedd2b035ba24709f850b23f51254 \
+    --hash=sha256:fee5b4fa2fb1638b57879a1fcaefbfd16201d8d7ecb9956406855a85d518ac4c

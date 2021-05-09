@@ -3,3 +3,4 @@
 # breaking changes, and to facilitate maintaining interdependent packages.
 #
 git+https://github.com/tox-dev/tox.git#egg=tox
+git+https://github.com/pypa/pip.git#egg=pip
