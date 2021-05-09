@@ -3,6 +3,7 @@
 A sort ot system test if you will.
 """
 import pathlib
+import shutil
 import subprocess
 
 import pytest  # type: ignore
@@ -17,7 +18,7 @@ _PROJECT_NAMES = [
 
 
 @pytest.mark.parametrize("project_name", _PROJECT_NAMES)
-def test_does_not_break(project_name):
+def test_does_not_break(project_name, tmpdir):
     """Smoke test
 
     Ensures that having tox-constraints installed does not interfere in projects that
@@ -26,4 +27,10 @@ def test_does_not_break(project_name):
     Ensures that for projects that use tox constraints do not smoke.
     This is especially useful in combination with offensive programming mechanisms.
     """
-    subprocess.check_call(["tox", "-r"], cwd=_SAMPLE_PROJECTS / project_name)
+    # Copy to:
+    # 1. avoid interaction with this project e.g. by accidentally using its constraints
+    #    file, and
+    # 2. ensure test starts with clean slat
+    dst = tmpdir / project_name
+    shutil.copytree(_SAMPLE_PROJECTS / project_name, dst)
+    subprocess.check_call(["tox"], cwd=dst)

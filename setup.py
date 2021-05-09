@@ -6,16 +6,16 @@ import setuptools
 def read_requirements(name):
     with open(
         os.path.join(os.path.dirname(__file__), "requirements", name + ".txt")
-    ) as fp:
-        return list(fp)
+    ) as f:
+        return list(f)
 
 
 def read_install_requires():
     return read_requirements("install_requires")
 
 
-with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fp:
-    long_description = fp.read()
+with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as f:
+    long_description = f.read()
 
 setuptools.setup(
     name="tox-constraints",

@@ -167,14 +167,14 @@ def _save_if_different(path: Path, new_content: str):
     Useful e.g. for only touching files when they change to avoid triggering make.
     """
     try:
-        with path.open("r") as fp:
-            old_content: Optional[str] = fp.read()
+        with path.open("r") as f:
+            old_content: Optional[str] = f.read()
     except FileNotFoundError:
         old_content = None
 
     if old_content != new_content:
-        with path.open("w") as fp:
-            fp.write(new_content)
+        with path.open("w") as f:
+            f.write(new_content)
 
 
 def _export_deps(envconfigs, path):

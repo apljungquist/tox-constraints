@@ -15,7 +15,7 @@ jobs:
         python-version: 3.7
     - name: Install dependencies
       run: |
-        pip install pip==20.2.2
+        pip install pip==20.2.4
         pip install -c constraints.txt pip setuptools
         pip install -c constraints.txt -r requirements.txt
         pip install . --no-deps
