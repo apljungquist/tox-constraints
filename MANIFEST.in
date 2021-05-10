@@ -1,2 +1,3 @@
 include LICENSE
-include requirements/install_requires.txt
+graft requirements/
+graft src/
