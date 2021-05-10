@@ -22,7 +22,7 @@ jobs:
         toxc-install
     - name: Run tests with tox
       run: |
-        tox -e linting,formatting,typing,py37,build
+        tox -e linting,formatting,typing,py37,recutter,build
     - name: Publish to PyPI
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
