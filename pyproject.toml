@@ -1,8 +1,11 @@
 [build-system]
 requires = [
-    "setuptools >= 40",
+    "setuptools >= 42",
+    "setuptools_scm[toml]>=6.0"
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.tox-constraints]
 # Intentionally empty, this sections existence will enable the plugin.
+
+[tool.setuptools_scm]

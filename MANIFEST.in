@@ -1,2 +1,4 @@
-include LICENSE
+global-exclude *
+include LICENSE README.md setup.py
 graft requirements/
+graft src/
