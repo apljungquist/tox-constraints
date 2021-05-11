@@ -1,5 +1,4 @@
 -rrequirements/tox.txt
--rrequirements/extras_require-recutter.txt
 -rrequirements/misc.txt
 -rrequirements/dev.txt
 -rrequirements/install_requires.txt
