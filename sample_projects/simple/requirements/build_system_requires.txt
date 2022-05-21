@@ -1,0 +1,2 @@
+canaria-domestica-red
+setuptools >= 61

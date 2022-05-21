@@ -3,6 +3,7 @@ import dataclasses
 import itertools
 import logging
 import os
+import pathlib
 import sys
 import textwrap
 from collections import defaultdict
@@ -134,31 +135,15 @@ def _find_upwards(start: Path, filename: str) -> Path:
 
 
 def _patch_envconfigs(tool_config: Config, config):
+    constraints_filepath = _find_upwards(
+        Path(config.toxinidir), tool_config.constraints_filename
+    )
     for name, envconfig in config.envconfigs.items():
-        if name == ".package":
-            # Don't patch isolated packaging environment because some parsing will fail
-            # on -cconstraints.txt
-            continue
-        if envconfig.skip_install is True and not envconfig.deps:
-            # Avoid attempting to install no packages as pip does not like this:
-            # > ERROR: You must give at least one requirement to install
-            continue
+        if list(_reqs_from_setenv(envconfig.setenv)):
+            logger.debug("Found existing PIP_CONSTRAINT for %s", name)
 
-        for dep in envconfig.deps:
-            if dep.name.startswith("-c"):
-                break
-        else:
-            constraints_filepath = _find_upwards(
-                Path(config.toxinidir), tool_config.constraints_filename
-            )
-            envconfig.deps.append(tox.config.DepConfig(f"-c{constraints_filepath}"))
-
-        if envconfig.skip_install is True:
-            pass
-        elif envconfig.skip_install is False:
-            _expands_requirements(tool_config, envconfig)
-        else:
-            raise ValueError
+        # Set iff user has not over-riden the configuration for this environment
+        envconfig.setenv["PIP_CONSTRAINT"] = str(constraints_filepath)
 
 
 def _save_if_different(path: Path, new_content: str):
@@ -219,24 +204,36 @@ def tox_configure(config):
         # environment that is shared by multiple projects
         return
 
+    # Allow users to gather deps without opting in to the other tox hooks provided by
+    # this package.
+    if config.option.requirementsfile is not None:
+        _export_deps(config.envconfigs, Path(config.option.requirementsfile))
+
     if tool_config.plugin_enabled:
-        if config.option.requirementsfile is not None:
-            _export_deps(config.envconfigs, Path(config.option.requirementsfile))
         _patch_envconfigs(tool_config, config)
 
 
-def _reqs_from_deps(deps):
+def _raise_on_legacy(deps):
+    # Ensure upgrading users are not left without protection.
+    # Also help protect new users from themselves.
     paths = [Path(dep.name[2:]) for dep in deps if dep.name.startswith("-c")]
+    if paths:
+        raise RuntimeError("Refusing to process -c flag, use PIP_CONSTRAINT instead")
 
-    # Poorly handled corner case: when skip_install is set and there are no deps listed
-    # for an environment then the constraints file is not been appended making any
-    # information needed to pin the seeds unavailable at this point
-    if not paths:
-        logger.warning("No constraints file specified, seeds will not be pinned")
 
-    for path in paths:
-        text = path.read_text()
-        yield from _parse_requirements(text)
+def _reqs_from_setenv(setenv):
+    for env in [setenv, os.environ]:
+        try:
+            path = pathlib.Path(env["PIP_CONSTRAINT"])
+            break
+        except KeyError:
+            pass
+    else:
+        return
+
+    # pylint: disable=unspecified-encoding
+    text = path.read_text()
+    yield from _parse_requirements(text)
 
 
 def _exact_version(req):
@@ -246,17 +243,17 @@ def _exact_version(req):
     raise LookupError(f"no == for {req}")
 
 
-def _augmented_virtualenv_args(args, deps):
+def _augmented_virtualenv_args(args, envconfig):
     yield from args
-    constraints = {req.key: req for req in _reqs_from_deps(deps)}
+    constraints = {req.key: req for req in _reqs_from_setenv(envconfig.setenv)}
     for distribution in ["pip", "setuptools", "wheel"]:
         try:
             req = constraints[distribution]
             version = _exact_version(req)
             yield f"--{distribution}"
             yield version
-        except LookupError:
-            logger.warning("Seed %s is not pinned", distribution)
+        except LookupError as e:
+            raise RuntimeError(f"Seed {distribution} is not pinned") from e
 
 
 _SKIP_VENV_CREATION = os.environ.get("_TOX_SKIP_ENV_CREATION_TEST", False) == "1"
@@ -264,6 +261,17 @@ _SKIP_VENV_CREATION = os.environ.get("_TOX_SKIP_ENV_CREATION_TEST", False) == "1
 
 @tox.hookimpl
 def tox_testenv_create(venv, action):
+    # pylint: disable=missing-function-docstring
+    try:
+        tool_config = Config.read()
+    except (FileNotFoundError, KeyError):
+        # Disable plugin by default to make it less disruptive in a development
+        # environment that is shared by multiple projects
+        return None
+
+    if not tool_config.plugin_enabled:
+        return None
+
     # pylint: disable=protected-access,missing-docstring
     config_interpreter = venv.getsupportedinterpreter()
     args = [sys.executable, "-m", "virtualenv"]
@@ -279,8 +287,7 @@ def tox_testenv_create(venv, action):
     args.extend(["--python", str(config_interpreter)])
 
     # Disables it for whole function but place here to consolidate changes
-    args = list(_augmented_virtualenv_args(args, venv.envconfig.deps))
-
+    args = list(_augmented_virtualenv_args(args, venv.envconfig))
     tox.venv.cleanup_for_venv(venv)
 
     base_path = venv.path.dirpath()

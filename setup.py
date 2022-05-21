@@ -30,11 +30,6 @@ setuptools.setup(
     package_dir={"": "src"},
     entry_points={
         "tox": ["constraints = tox_constraints.hooks"],
-        "console_scripts": [
-            "toxc-install=tox_constraints.git_filter:install",
-            "toxc-clean=tox_constraints.git_filter:clean",
-            "toxc-smudge=tox_constraints.git_filter:smudge",
-        ],
     },
     classifiers=["License :: OSI Approved :: MIT License"],
 )

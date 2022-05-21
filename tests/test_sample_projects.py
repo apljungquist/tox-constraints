@@ -13,7 +13,7 @@ _SAMPLE_PROJECTS = _PROJECT_ROOT / "sample_projects"
 _PROJECT_NAMES = [
     # Keep slow tests and expected failures in the back to fail fast
     pytest.param("coalmine", marks=[]),
-    pytest.param("pypackage", marks=[]),
+    pytest.param("simple", marks=[]),
 ]
 
 

@@ -9,7 +9,7 @@ requirements.txt: $(wildcard requirements/*.txt)
 	> $@
 
 constraints.txt: requirements.txt
-	pip-compile --generate-hashes --allow-unsafe --output-file $@ $^ >/dev/null
+	pip-compile --allow-unsafe --output-file $@ $^ >/dev/null
 
 # Shortcut for recreating an sdist that depends on the current sources only, not also on the previous sdist build.
 sdist:

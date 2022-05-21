@@ -1,7 +1,0 @@
-# This is a comment
---index-url https://example.com
-# $TOP_LEVEL$  # via -r requirements.in
-# $TOP_LEVEL_PLAIN$  # via -r requirements.in
-appdirs==1.4.3 \
-    --hash=sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92 \
-    # via black

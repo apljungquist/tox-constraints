@@ -5,7 +5,6 @@
 #    tox --requirements-file requirements/tox.txt
 #
 black     # from formatting
-codecov   # from cov-codecov
 coverage  # from cov-html, py37, py37-devel, py37-highest, py37-lowest
 mypy      # from typing
 pep517    # from build
