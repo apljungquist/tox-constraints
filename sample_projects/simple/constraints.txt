@@ -51,15 +51,23 @@ six==1.16.0
     #   tox
     #   virtualenv
 toml==0.10.2
-    # via tox
+    # via
+    #   tox
+    #   tox-constraints
 tomli==2.0.1
     # via
     #   pep517
     #   pytest
 tox==3.25.0
-    # via -r requirements/dev.txt
+    # via
+    #   -r requirements/dev.txt
+    #   tox-constraints
+tox-constraints==0.14
+    # via -r requirements/tox.txt
 virtualenv==20.14.1
-    # via tox
+    # via
+    #   tox
+    #   tox-constraints
 wheel==0.37.1
     # via pip-tools
 

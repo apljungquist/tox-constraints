@@ -1,2 +1,3 @@
+# We should not have to duplciate these manually
 canaria-domestica-red
 setuptools >= 61
