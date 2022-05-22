@@ -1,4 +1,3 @@
 -r requirements/build_system_requires.txt
 -r requirements/dev.txt
--r requirements/install_requires.txt
 -r requirements/tox.txt

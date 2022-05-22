@@ -32,12 +32,8 @@ But it cannot pick up `deps` from `tox.ini` file or `build-system.requires` from
 Known limitations and problems include
 * `deps` from environments not on the `envlist` will not be gathered.
 * `-l` should be set when gathering dependencies to avoid actually running the environments.
-* To make dependencies available to pip pip-compile they must be factored out into text files that are read by `setup.py`.
 * The `build-system.requires` section from `pyproject.toml` must be manually reproduced in a text file to make it available to pip-compile.
-* pip-compile replaces `.` from a requirements file with something like `my-package @ file:///home/username/reponame`.
-  This package previously provided clean and smudge programs to help deal with this (among other things).
-  Another workaround is to put requirements in files and read them dynamically in `setup.py`.
-  Since dynamic usage of `setup.py` is discouraged it would be nice to add support for extracting the dependencies from `setup.cfg` or `pyproject.toml`.
+  There is an [open issue in pip-tools](https://github.com/jazzband/pip-tools/issues/1396) that, if implemented, would resolve this.
 
 [^1]: Using the `-c` flag on the other hand does not ensure that build dependencies are pinned, see [pip#8439](https://github.com/pypa/pip/issues/8439).
 [^2]: Except when it does not.
