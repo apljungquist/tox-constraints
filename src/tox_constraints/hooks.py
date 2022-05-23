@@ -208,8 +208,7 @@ def tox_configure(config):
     # this package.
     if config.option.requirementsfile is not None:
         _export_deps(config.envconfigs, Path(config.option.requirementsfile))
-
-    if tool_config.plugin_enabled:
+    elif tool_config.plugin_enabled:
         _patch_envconfigs(tool_config, config)
 
 
